@@ -21,11 +21,46 @@ const calendar = () => {
       return;
     }
     setEndTime(date);
-    selectedSlotsArray.push([
-      startTime.toLocaleTimeString('en-US'),
-      date.toLocaleTimeString('en-US'),
-    ]);
   };
+
+  const bookSlot = () => {
+    if (selectedSlotsArray.length < 1) {
+      selectedSlotsArray.push([
+        startTime,
+        endTime,
+      ]);
+      Alert.alert('Slot booked successfully');
+      setStartTime(null);
+      setEndTime(null);
+      return;
+    }
+    if (!checkSlotAvailability()) {
+      Alert.alert('Selected slot is not available');
+      return;
+    }
+    selectedSlotsArray.push([
+      startTime,
+      endTime,
+    ]);
+    selectedSlotsArray.sort(([a], [b]) => a < b ? -1 : 1);
+    setStartTime(null);
+    setEndTime(null);
+
+    console.log(selectedSlotsArray);
+  }
+
+  const checkSlotAvailability = () => {
+    for (let index = 0; index < selectedSlotsArray.length; index++) {
+      if (
+        startTime < selectedSlotsArray[index][1] &&
+        endTime > selectedSlotsArray[index][0]
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   return (
     <>
       <View>
@@ -44,7 +79,7 @@ const calendar = () => {
           <Button text={'End Time'} onPress={() => setIsOpenEnd(true)} />
         </View>
         <View style={{alignContent: 'center', alignItems: 'center', marginVertical:50}}>
-          <Button text={'Book Slot'} onPress={() => {}} />
+          <Button text={'Book Slot'} onPress={() => {bookSlot()}} />
         </View>
 
         <DatePicker
