@@ -24,6 +24,10 @@ const calendar = () => {
   };
 
   const bookSlot = () => {
+    if (!startTime || !endTime) {
+      Alert.alert('Please select slots first');
+      return;
+    }
     if (selectedSlotsArray.length < 1) {
       selectedSlotsArray.push([
         startTime,
@@ -43,10 +47,9 @@ const calendar = () => {
       endTime,
     ]);
     selectedSlotsArray.sort(([a], [b]) => a < b ? -1 : 1);
+    Alert.alert('Selected slot is booked successfully');
     setStartTime(null);
     setEndTime(null);
-
-    console.log(selectedSlotsArray);
   }
 
   const checkSlotAvailability = () => {
@@ -59,6 +62,14 @@ const calendar = () => {
       }
     }
     return true;
+  }
+  const getSelectedSlots = () => {
+    let convertedSlots = [];
+    selectedSlotsArray.forEach((slot) => {
+      convertedSlots.push(` ${slot[0].toLocaleTimeString('en-US')}-${slot[1].toLocaleTimeString('en-US')}`
+      );
+    })
+    return convertedSlots;
   }
 
   return (
@@ -80,6 +91,10 @@ const calendar = () => {
         </View>
         <View style={{alignContent: 'center', alignItems: 'center', marginVertical:50}}>
           <Button text={'Book Slot'} onPress={() => {bookSlot()}} />
+        </View>
+        <View style={{alignContent: 'center', alignItems: 'center', marginVertical:50}}>
+          <Text>Selected slots</Text>
+          <Text>{`${getSelectedSlots()}`}</Text>
         </View>
 
         <DatePicker
